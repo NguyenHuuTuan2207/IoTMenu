@@ -18,7 +18,6 @@ export const fetchEthPrice = async (): Promise<number> => {
   return data.ethereum.vnd;
 };
 
-// ✅ Đã bỏ voucherPercent
 export const calculateTotal = (
   menu: MenuItem[],
   quantities: Record<number, number>

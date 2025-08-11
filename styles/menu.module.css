@@ -5,7 +5,7 @@
   position: relative;
   z-index: 1;
 
-  background-image: url('../asset/background_img.jpg'); /* 👉 Thay bằng tên file trong /public */
+  background-image: url('../asset/background_img.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -31,9 +31,16 @@ export default function MenuPage() {
         })
         .catch((err) => console.error(err));
 
-      fetchEthPrice()
-        .then(setEthPrice)
-        .catch((err) => console.error(err));
+      const updateEthPrice = () => {
+        fetchEthPrice()
+          .then(setEthPrice)
+          .catch((err) => console.error(err));
+      };
+
+      updateEthPrice(); // Initial fetch
+      const intervalId = setInterval(updateEthPrice, 30000);
+
+      return () => clearInterval(intervalId); // Cleanup on unmount
     }
   }, []);
 
@@ -53,6 +60,7 @@ export default function MenuPage() {
 
   const total = calculateTotal(menu, quantities);
   const dapAmount = calculateDap(total, ethPrice);
+  const giacodong = dapAmount / 4;
 
   return (
     <div className={styles.container}>
@@ -105,6 +113,8 @@ export default function MenuPage() {
         <div className={styles.totalContainer}>
           <h2>Tổng cộng: {formatCurrency(total)}</h2>
           <h1 className={styles.dap}>≈ {dapAmount.toFixed(1)} DAP</h1>
+          <b>≈ {giacodong.toFixed(2)} DAP (Áp dụng cho cổ đông IoT)</b>
+
           <h3>1 DAP = {(ethPrice / 1000).toLocaleString('en-US').replace(/,/g, ', ')} VNĐ</h3>
         </div>
         <div>
@@ -116,6 +126,6 @@ export default function MenuPage() {
           </ul>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
