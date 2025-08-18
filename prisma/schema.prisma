@@ -18,3 +18,9 @@ model adminAccount {
   ten       String
   mat_khau  String
 }
+model menuCoDong{
+  id       Int    @id @default(autoincrement())
+  ten_mon  String
+  gia      Int
+  danh_muc String
+}

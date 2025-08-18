@@ -14,12 +14,13 @@ type MenuItem = {
 };
 
 export default function AdminPage() {
-    const router = useRouter(); //khai báo router 
+    const router = useRouter();
     const [menu, setMenu] = useState<MenuItem[]>([]);
     const [form, setForm] = useState({ ten_mon: '', gia: '', danh_muc: '', id: 0 });
+    const [tableType, setTableType] = useState<'menu' | 'menuCoDong'>('menu'); // mặc định bảng khách hàng
 
     const fetchMenu = async () => {
-        const res = await fetch('/api/menu');
+        const res = await fetch(`/api/${tableType}`);
         const data = await res.json();
         setMenu(data);
     };
@@ -30,12 +31,12 @@ export default function AdminPage() {
         } else {
             fetchMenu();
         }
-    }, []);
+    }, [tableType]); // khi đổi bảng, tự load lại
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const method = form.id ? 'PUT' : 'POST';
-        const url = form.id ? `/api/menu/${form.id}` : '/api/menu';
+        const url = form.id ? `/api/${tableType}/${form.id}` : `/api/${tableType}`;
 
         await fetch(url, {
             method,
@@ -50,28 +51,44 @@ export default function AdminPage() {
     };
 
     const handleDelete = async (id: number) => {
-        await fetch(`/api/menu/${id}`, { method: 'DELETE' });
+        await fetch(`/api/${tableType}/${id}`, { method: 'DELETE' });
         fetchMenu();
     };
 
     return (
         <div className={styles.wrapper}>
-            <h1 className={styles.title}>Quản Lý Menu</h1>
-            <button className={`${styles.logoutBtn} ${styles.logoutIcon}`} onClick={() => {
-                sessionStorage.removeItem('isAdmin');
-                router.push('/admin/loginAdmin');
-            }}>
+            <h1 className={styles.title}>Quản Lý {tableType === 'menu' ? 'Menu Khách Hàng' : 'Menu Thành Viên'}</h1>
+
+            {/* Nút đăng xuất */}
+            <button
+                className={`${styles.logoutBtn} ${styles.logoutIcon}`}
+                onClick={() => {
+                    sessionStorage.removeItem('isAdmin');
+                    router.push('/admin/loginAdmin');
+                }}
+            >
                 <FontAwesomeIcon icon={faRightFromBracket} />
             </button>
-
-            <button className={`${styles.logoutBtn} ${styles.logoutText}`} onClick={() => {
-                sessionStorage.removeItem('isAdmin');
-                router.push('/admin/loginAdmin');
-            }}>
+            <button
+                className={`${styles.logoutBtn} ${styles.logoutText}`}
+                onClick={() => {
+                    sessionStorage.removeItem('isAdmin');
+                    router.push('/admin/loginAdmin');
+                }}
+            >
                 Đăng xuất
             </button>
 
+            <select
+                className={styles.input}
+                value={tableType}
+                onChange={(e) => setTableType(e.target.value as 'menu' | 'menuCoDong')}
+            >
+                <option value="menu">Bảng khách hàng</option>
+                <option value="menuCoDong">Bảng thành viên IoT</option>
+            </select>
 
+            {/* Form thêm/sửa */}
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                     className={styles.input}
@@ -96,7 +113,7 @@ export default function AdminPage() {
                 >
                     <option value="">-- Chọn danh mục --</option>
                     <option value="Đồ uống">Đồ uống</option>
-                    <option value="IoT Department & Hotel">IoT Apartment & Hotel</option>
+                    <option value="IoT Apartment & Hotel">IoT Apartment & Hotel</option>
                     <option value="Sâm Ngọc Linh">Sâm Ngọc Linh mật ong</option>
                 </select>
 
@@ -114,19 +131,19 @@ export default function AdminPage() {
                 )}
             </form>
 
-            <table className={styles.tableItems} >
+            {/* Danh sách */}
+            <table className={styles.tableItems}>
                 <thead>
                     <tr>
                         <th>Tên món</th>
                         <th>Giá</th>
                         <th>Danh mục</th>
-                        <th className={styles.actionColumn}
-                        >Hành động&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th className={styles.actionColumn}>Hành động</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody>
                     {menu.map((item) => (
-                        <tr className={styles.tableItems} key={item.id}>
+                        <tr key={item.id}>
                             <td>{item.ten_mon}</td>
                             <td>{item.gia.toLocaleString()} đ</td>
                             <td>{item.danh_muc}</td>
@@ -148,7 +165,6 @@ export default function AdminPage() {
                     ))}
                 </tbody>
             </table>
-        </div >
+        </div>
     );
-
 }

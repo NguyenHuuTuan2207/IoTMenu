@@ -26,7 +26,7 @@
 
 .title {
   text-align: center;
-  font-size: 70px;
+  font-size: 45px;
   margin-top: -20px;
   font-family: 'Cooper Black', serif;
   color: Green;
@@ -148,18 +148,18 @@
   color: #0cb853;
 }
 .noBulletList {
-  list-style-type: none;
-  font-weight: bold;
-  font-size: 23px;
+  list-style-type: none; 
 }
+
 .menuGreen {
   color: Green;
   font-size: 25px;
   font-family: 'Cooper Black', serif;
 }
 .liSpace {
-    margin-bottom: 10px;
-  
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 23px;
 }
 .categoryBox {
   border: 2px solid rgba(76, 175, 80, 0.5); 
@@ -179,6 +179,29 @@
   font-size: 1.5rem;
   margin-bottom: 12px;
   color: #2e7d32;
+}
+.buttonNavigate {
+  background-color: #3b82f6; /* xanh */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 9999px; /* bo tròn full */
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease-in-out;
+  margin-left: 20px;
+
+}
+
+.buttonNavigate:hover {
+  background-color: #2563eb; /* xanh đậm hơn khi hover */
+}
+.u2udisplay{
+  font-size: 0.85em;
+  color : #007bff;
+  margin-left: -115px;
+  margin-top: 50px;
 }
 
 @media (max-width: 400px) {
@@ -234,5 +257,14 @@
   color: #0d0b06;
   font-weight: bold;
   font-size: 22px ;
+  margin-left:20px;
+
+}
+.u2udisplay{
+  font-size: 0.85em;
+  color : #007bff;
+  margin-left: -115px;
+  margin-top: 50px;
+  display: block;
 }
 }

@@ -17,6 +17,12 @@ export const fetchEthPrice = async (): Promise<number> => {
   const data = await res.json();
   return data.ethereum.vnd;
 };
+export const fetchU2UPrice = async (): Promise<number> => {
+  const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=unicorn-ultra&vs_currencies=vnd");
+  if (!res.ok) throw new Error("Lỗi tải giá U2U");
+  const data = await res.json();
+  return data["unicorn-ultra"].vnd;
+};
 
 export const calculateTotal = (
   menu: MenuItem[],
@@ -28,8 +34,12 @@ export const calculateTotal = (
 };
 
 export const calculateDap = (total: number, ethPrice: number): number => {
-  return ethPrice > 0 ? (total * 4) / (ethPrice / 1000) : 0;
+  if (ethPrice <= 0) return 0;
+
+  const adjustedTotal = total >= 1000000 ? total : total * 4;
+  return adjustedTotal / (ethPrice / 1000);
 };
+
 
 export const formatCurrency = (value: number): string =>
   value.toLocaleString("vi-VN", {
