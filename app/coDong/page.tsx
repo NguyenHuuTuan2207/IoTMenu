@@ -174,6 +174,11 @@ export default function MenuPage() {
                     </ul>
                 </div>
             </div>
-        </div>
+            {/* Footer */}
+            <footer className={styles.footer}>
+                <p>© Bản quyền thuộc về IoT Innovation Hub 2025</p>
+            </footer>
+
+        </div >
     );
 }
