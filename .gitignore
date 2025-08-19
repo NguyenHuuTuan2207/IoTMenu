@@ -33,5 +33,4 @@ yarn-error.log*
 .turbo
 
 .contentlayer
-.env
 /generated/prisma
