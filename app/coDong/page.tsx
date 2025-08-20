@@ -86,60 +86,69 @@ export default function MenuPage() {
             return item?.danh_muc === "IoT Apartment & Hotel";
         });
 
+    // ✅ Thứ tự ưu tiên danh mục
+    const categoryOrder = ["Đồ uống", "Sâm Ngọc Linh", "IoT Apartment & Hotel"];
+    const sortedCategories = [
+        ...categoryOrder,
+        ...Object.keys(groupedMenu).filter(cat => !categoryOrder.includes(cat))
+    ];
+
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>IoT Member Menu </h1>
+            <h1 className={styles.title}>IoT Member Menu</h1>
             <ul className={styles.list}>
-                {Object.entries(groupedMenu).map(([category, items]) => (
-                    <li key={category} className={styles.categoryBox}>
-                        <div className={styles.categoryTitle}>
-                            <h3>{category}</h3>
-                        </div>
-                        <ul>
-                            {items.map((item) => (
-                                <li key={item.id} className={styles.item}>
-                                    <div className={styles.itemInfo}>
-                                        <span>
-                                            {item.ten_mon.replace(/\s*\(.*\)/, '')}
-                                            <br />
-                                            <small style={{ fontSize: '0.85em', color: '#555' }}>
-                                                {/\(.*\)/.test(item.ten_mon) && item.ten_mon.match(/\(.*\)/)?.[0]}
-                                            </small>
-                                        </span>
-                                    </div>
-                                    <div className={styles.quantity}>
-                                        <button
-                                            className={styles.decreaseBtn}
-                                            onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) - 1)}
-                                        >-</button>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            value={quantities[item.id] || 0}
-                                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                            className={styles.input}
-                                        />
-                                        <button
-                                            className={styles.increaseBtn}
-                                            onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) + 1)}
-                                        >+</button>
-                                        <span className={styles.price}>{formatCurrency(item.gia)}</span>
+                {sortedCategories.map((category) =>
+                    groupedMenu[category] ? (
+                        <li key={category} className={styles.categoryBox}>
+                            <div className={styles.categoryTitle}>
+                                <h3>{category}</h3>
+                            </div>
+                            <ul>
+                                {groupedMenu[category].map((item) => (
+                                    <li key={item.id} className={styles.item}>
+                                        <div className={styles.itemInfo}>
+                                            <span>
+                                                {item.ten_mon.replace(/\s*\(.*\)/, '')}
+                                                <br />
+                                                <small style={{ fontSize: '0.85em', color: '#555' }}>
+                                                    {/\(.*\)/.test(item.ten_mon) && item.ten_mon.match(/\(.*\)/)?.[0]}
+                                                </small>
+                                            </span>
+                                        </div>
+                                        <div className={styles.quantity}>
+                                            <button
+                                                className={styles.decreaseBtn}
+                                                onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) - 1)}
+                                            >-</button>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                value={quantities[item.id] || 0}
+                                                onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                                className={styles.input}
+                                            />
+                                            <button
+                                                className={styles.increaseBtn}
+                                                onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) + 1)}
+                                            >+</button>
+                                            <span className={styles.price}>{formatCurrency(item.gia)}</span>
 
-                                        {/* Giá U2U hiển thị ở từng item (chỉ IoT Apartment & Hotel) */}
-                                        {item.danh_muc === "IoT Apartment & Hotel" && U2UPrice > 0 && (
-                                            <div className={styles.u2udisplay}>
-                                                {(item.gia / U2UPrice).toLocaleString('en-US', {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2
-                                                })} U2U
-                                            </div>
-                                        )}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
+                                            {/* Giá U2U hiển thị ở từng item (chỉ IoT Apartment & Hotel) */}
+                                            {item.danh_muc === "IoT Apartment & Hotel" && U2UPrice > 0 && (
+                                                <div className={styles.u2udisplay}>
+                                                    {(item.gia / U2UPrice).toLocaleString('en-US', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    })} U2U
+                                                </div>
+                                            )}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                    ) : null
+                )}
             </ul>
             <div className={styles.totalRow}>
                 <div className={styles.totalContainer}>
@@ -154,11 +163,14 @@ export default function MenuPage() {
                                 maximumFractionDigits: 2
                             })} U2U
                         </h2>
-
                     )}
 
-                    <h3>1 DAP = {(ethPrice / 1000).toLocaleString('en-US').replace(/,/g, ', ')} VNĐ</h3>
-                    <h3>1 U2U = {U2UPrice.toLocaleString('en-US')} VNĐ</h3>
+                    {ethPrice > 0 && (
+                        <h3>1 DAP = {(ethPrice / 1000).toLocaleString('vi-VN')} VNĐ</h3>
+                    )}
+                    {U2UPrice > 0 && (
+                        <h3>1 U2U = {U2UPrice.toLocaleString('vi-VN')} VNĐ</h3>
+                    )}
                 </div>
                 <div>
                     <ul className={styles.noBulletList}>
@@ -168,7 +180,7 @@ export default function MenuPage() {
                         </li>
                         <li>
                             <Link href="/" className={styles.buttonNavigate}>
-                                Menu khách hàng IoT
+                                Click đến menu khách hàng
                             </Link>
                         </li>
                     </ul>
@@ -178,7 +190,6 @@ export default function MenuPage() {
             <footer className={styles.footer}>
                 <p>© Bản quyền thuộc về IoT Innovation Hub 2025</p>
             </footer>
-
-        </div >
+        </div>
     );
 }

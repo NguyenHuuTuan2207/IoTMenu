@@ -1,8 +1,8 @@
+/* ================= DEFAULT (Desktop ≥1025px) ================= */
 .wrapper {
   padding: 40px;
   max-width: 900px;
-  margin: 40px auto;
-  margin-top: 100px;
+  margin: 100px auto 40px;
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -25,7 +25,7 @@
   cursor: pointer;
   float: right;
   margin-bottom: 20px;
-  height :40px;
+  height: 40px;
 }
 
 .logoutBtn:hover {
@@ -46,6 +46,7 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
+  margin: 5px 0;
 }
 
 .submitBtn, .cancelBtn {
@@ -74,7 +75,6 @@
 .cancelBtn:hover {
   background-color: #757575;
 }
-
 
 .actionBtn {
   padding: 6px 12px;
@@ -108,14 +108,16 @@
   border-collapse: collapse;
   border-bottom: 1px solid #0a0909;
   text-align: left;
-  table-layout: auto; 
+  table-layout: auto;
   width: 100%;
   overflow-y: auto;
-  line-height: 3; 
+  line-height: 3;
 }
-.actionColumn{
+
+.actionColumn {
   text-align: right;
 }
+
 .logoutIcon {
   display: none;
 }
@@ -124,73 +126,133 @@
   display: block;
 }
 
-@media (max-width: 820px) {
-  .container {
-    padding: 20px;
+/* ================= LAPTOP nhỏ / Tablet ngang (≤1024px) ================= */
+@media (max-width: 1024px) {
+  .wrapper {
+    max-width: 700px;
+    padding: 30px;
   }
 
+  .title {
+    font-size: 28px;
+  }
+
+  .input {
+    font-size: 15px;
+    padding: 8px;
+  }
+
+  .submitBtn, .cancelBtn {
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+
+  .actionBtn {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+}
+
+/* ================= Tablet dọc (≤768px) ================= */
+@media (max-width: 768px) {
   .wrapper {
-    position: relative;
-    padding: 40px;
-    max-width: 900px;
-    margin: 40px auto;
-    margin-top: 100px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    font-family: Arial, sans-serif;
+    max-width: 90%;
+    padding: 25px;
+  }
+
+  .title {
+    font-size: 24px;
   }
 
   .logoutBtn {
-    position: absolute; 
-    top: 20px;         
-    right: 20px;       
-    background-color: #6f6f6f;
-    color: white;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    height: 40px;
-    float: none;        
-    margin-bottom: 0;   
+    font-size: 14px;
+    padding: 6px 10px;
   }
 
-  .submitBtn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 10px;
+  .input {
+    font-size: 14px;
+    min-width: 150px;
   }
-  .cancelBtn {
-    position: absolute; 
-    top: 125px;  
-    right:74px;        
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  .tableItems {
-  border-collapse: collapse;
-  border-bottom: 1px solid #0a0909;
-  text-align: left;
-  table-layout: auto; 
-  width: 100%;
-  overflow-y: auto;
-  line-height: 3; 
-  margin-top: 50px;
+.cancelBtn{
+  margin-right:-25px ;
+  margin-top:80px ;
 }
- .logoutIcon {
+  .tableItems {
+    font-size: 14px;
+    line-height: 2.5;
+  }
+}
+
+/* ================= Mobile nhỏ (≤480px) ================= */
+@media (max-width: 480px) {
+  .wrapper {
+    position: relative;
+    max-width: 95%;
+    padding: 20px;
+    margin-top: 60px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-top:2px;
+  }
+
+  .logoutBtn {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: #6f6f6f;
+    font-size: 16px;
+    padding: 6px 10px;
+    float: none;
+    margin-bottom: 0;
+  }
+
+  .cancelBtn {
+    position: absolute;
+    top: 125px;
+    right: 74px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .input {
+    font-size: 13px;
+    padding: 8px;
+    min-width: 120px;
+  }
+
+.submitBtn {
+  background-color: #2e7d32;
+  color: white;
+  font-size: 10px;
+  padding: -7px 7px;   /* giảm padding trên dưới */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+ 
+}
+ .cancelBtn{
+  margin-right:-25px ;
+  margin-top:80px ;
+}
+  .tableItems {
+    font-size: 10px;
+    line-height: 2;
+    margin-top: 50px;
+  }
+
+  .actionBtn {
+    font-size: 7px;
+    padding: 4px 2px;
+  }
+
+  .logoutIcon {
     display: inline-block;
   }
 
   .logoutText {
     display: none;
   }
-
 }

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import styles from "../styles/menu.module.css";
-import Image from 'next/image';
-import qrImg from '../asset/qr.png';
+import Image from "next/image";
+import qrImg from "../asset/qr.png";
 import {
   fetchMenuData,
   fetchEthPrice,
@@ -11,7 +11,7 @@ import {
   calculateTotal,
   calculateDap,
   formatCurrency,
-  MenuItem
+  MenuItem,
 } from "@/lib/menuUtils";
 import Link from "next/link";
 
@@ -65,7 +65,10 @@ export default function MenuPage() {
   }, []);
 
   const handleQuantityChange = (id: number, value: number | string) => {
-    const qty = Math.max(0, typeof value === "string" ? parseInt(value) || 0 : value);
+    const qty = Math.max(
+      0,
+      typeof value === "string" ? parseInt(value) || 0 : value
+    );
     setQuantities((prev) => ({
       ...prev,
       [id]: qty,
@@ -82,65 +85,103 @@ export default function MenuPage() {
   const dapAmount = calculateDap(total, ethPrice);
 
   // Kiểm tra giỏ hàng chỉ có sản phẩm IoT Apartment & Hotel
-  const selectedItems = menu.filter(item => (quantities[item.id] || 0) > 0);
+  const selectedItems = menu.filter((item) => (quantities[item.id] || 0) > 0);
   const onlyIoT =
     selectedItems.length > 0 &&
-    selectedItems.every(item => item.danh_muc === "IoT Apartment & Hotel");
+    selectedItems.every(
+      (item) => item.danh_muc === "IoT Apartment & Hotel"
+    );
+
+  // Thứ tự ưu tiên danh mục
+  const categoryOrder = [
+    "Đồ uống",
+    "Sâm Ngọc Linh",
+    "IoT Apartment & Hotel",
+  ];
+  const sortedCategories = [
+    ...categoryOrder,
+    ...Object.keys(groupedMenu).filter(
+      (cat) => !categoryOrder.includes(cat)
+    ),
+  ];
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>IoT Garden</h1>
       <ul className={styles.list}>
-        {Object.entries(groupedMenu).map(([category, items]) => (
-          <li key={category} className={styles.categoryBox}>
-            <div className={styles.categoryTitle}>
-              <h3>{category}</h3>
-            </div>
-            <ul>
-              {items.map((item) => (
-                <li key={item.id} className={styles.item}>
-                  <div className={styles.itemInfo}>
-                    <span>
-                      {item.ten_mon.replace(/\s*\(.*\)/, '')}
-                      <br />
-                      <small style={{ fontSize: '0.85em', color: '#555' }}>
-                        {/\(.*\)/.test(item.ten_mon) && item.ten_mon.match(/\(.*\)/)?.[0]}
-                      </small>
-                    </span>
-                  </div>
-                  <div className={styles.quantity}>
-                    <button
-                      className={styles.decreaseBtn}
-                      onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) - 1)}
-                    >-</button>
-                    <input
-                      type="number"
-                      min="0"
-                      value={quantities[item.id] || 0}
-                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                      className={styles.input}
-                    />
-                    <button
-                      className={styles.increaseBtn}
-                      onClick={() => handleQuantityChange(item.id, (quantities[item.id] || 0) + 1)}
-                    >+</button>
-                    <span className={styles.price}>{formatCurrency(item.gia)}</span>
+        {sortedCategories.map((category) =>
+          groupedMenu[category] ? (
+            <li key={category} className={styles.categoryBox}>
+              <div className={styles.categoryTitle}>
+                <h3>{category}</h3>
+              </div>
+              <ul>
+                {groupedMenu[category].map((item) => (
+                  <li key={item.id} className={styles.item}>
+                    <div className={styles.itemInfo}>
+                      <span>
+                        {item.ten_mon.replace(/\s*\(.*\)/, "")}
+                        <br />
+                        <small style={{ fontSize: "0.85em", color: "#555" }}>
+                          {/\(.*\)/.test(item.ten_mon) &&
+                            item.ten_mon.match(/\(.*\)/)?.[0]}
+                        </small>
+                      </span>
+                    </div>
+                    <div className={styles.quantity}>
+                      <button
+                        className={styles.decreaseBtn}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.id,
+                            (quantities[item.id] || 0) - 1
+                          )
+                        }
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min="0"
+                        value={quantities[item.id] || 0}
+                        onChange={(e) =>
+                          handleQuantityChange(item.id, e.target.value)
+                        }
+                        className={styles.input}
+                      />
+                      <button
+                        className={styles.increaseBtn}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.id,
+                            (quantities[item.id] || 0) + 1
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                      <span className={styles.price}>
+                        {formatCurrency(item.gia)}
+                      </span>
 
-                    {/* Nếu thuộc danh mục IoT Apartment & Hotel thì hiển thị giá U2U */}
-                    {item.danh_muc === "IoT Apartment & Hotel" && U2UPrice > 0 && (
-                      <div className={styles.u2udisplay}>
-                        {(item.gia / U2UPrice).toLocaleString('en-US', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2
-                        })}  U2U
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
+                      {/* Nếu thuộc danh mục IoT Apartment & Hotel thì hiển thị giá U2U */}
+                      {item.danh_muc === "IoT Apartment & Hotel" &&
+                        U2UPrice > 0 && (
+                          <div className={styles.u2udisplay}>
+                            {(item.gia / U2UPrice).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            U2U
+                          </div>
+                        )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : null
+        )}
       </ul>
 
       <div className={styles.totalRow}>
@@ -149,28 +190,41 @@ export default function MenuPage() {
           <h1 className={styles.dap}>≈ {dapAmount.toFixed(1)} DAP </h1>
 
           {/* Chỉ hiện khi giỏ hàng chỉ có món trong IoT Apartment & Hotel */}
-          {onlyIoT && (
+          {onlyIoT && U2UPrice > 0 && (
             <h2>
-              = {(total / U2UPrice).toLocaleString('en-US', {
+              ={" "}
+              {(total / U2UPrice).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })} U2U
+                maximumFractionDigits: 2,
+              })}{" "}
+              U2U
             </h2>
-
           )}
 
-          <h3>1 DAP = {(ethPrice / 1000).toLocaleString('en-US').replace(/,/g, ', ')} VNĐ</h3>
-          <h3>1 U2U = {U2UPrice.toLocaleString('en-US')} VNĐ</h3>
+          {ethPrice > 0 && (
+            <h3>
+              1 DAP = {(ethPrice / 1000).toLocaleString("vi-VN")} VNĐ
+            </h3>
+          )}
+          {U2UPrice > 0 && (
+            <h3>1 U2U = {U2UPrice.toLocaleString("vi-VN")} VNĐ</h3>
+          )}
         </div>
         <div>
           <ul className={styles.noBulletList}>
             <li className={styles.liSpace}>QR Thanh Toán (DAP)</li>
             <li className={styles.liSpace}>
-              <Image src={qrImg} alt="QR" width={150} height={150} className={styles.imgBorder} />
+              <Image
+                src={qrImg}
+                alt="QR"
+                width={150}
+                height={150}
+                className={styles.imgBorder}
+              />
             </li>
             <li>
               <Link href="/coDong" className={styles.buttonNavigate}>
-                Menu thành viên IoT
+                Click đến menu thành viên IoT
               </Link>
             </li>
           </ul>
@@ -180,7 +234,6 @@ export default function MenuPage() {
       <footer className={styles.footer}>
         <p>© Bản quyền thuộc về IoT Innovation Hub 2025</p>
       </footer>
-
-    </div >
+    </div>
   );
 }
