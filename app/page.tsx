@@ -20,6 +20,7 @@ export default function MenuPage() {
   const [quantities, setQuantities] = useState<Record<number, number>>({});
   const [ethPrice, setEthPrice] = useState<number>(0);
   const [U2UPrice, setU2UPrice] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<string>("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -49,17 +50,38 @@ export default function MenuPage() {
           .catch((err) => console.error(err));
       };
 
+      // Hàm cập nhật thời gian
+      const updateTime = () => {
+        const now = new Date();
+        const pad = (n: number) => n.toString().padStart(2, "0");
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+        const seconds = pad(now.getSeconds());
+        const day = pad(now.getDate());
+        const month = pad(now.getMonth() + 1);
+        const year = now.getFullYear();
+
+        const formatted = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+        setCurrentTime(formatted);
+      };
+
       // Gọi lần đầu
       updateEthPrice();
       updateU2UPrice();
+      updateTime();
 
       // Cập nhật mỗi 30 giây
       const ethIntervalId = setInterval(updateEthPrice, 30000);
       const u2uIntervalId = setInterval(updateU2UPrice, 30000);
 
+      // Cập nhật thời gian mỗi giây
+      const timeIntervalId = setInterval(updateTime, 1000);
+
       return () => {
         clearInterval(ethIntervalId);
         clearInterval(u2uIntervalId);
+        clearInterval(timeIntervalId);
       };
     }
   }, []);
@@ -88,21 +110,13 @@ export default function MenuPage() {
   const selectedItems = menu.filter((item) => (quantities[item.id] || 0) > 0);
   const onlyIoT =
     selectedItems.length > 0 &&
-    selectedItems.every(
-      (item) => item.danh_muc === "IoT Apartment & Hotel"
-    );
+    selectedItems.every((item) => item.danh_muc === "IoT Apartment & Hotel");
 
   // Thứ tự ưu tiên danh mục
-  const categoryOrder = [
-    "Đồ uống",
-    "Sâm Ngọc Linh",
-    "IoT Apartment & Hotel",
-  ];
+  const categoryOrder = ["Đồ uống", "Sâm Ngọc Linh", "IoT Apartment & Hotel"];
   const sortedCategories = [
     ...categoryOrder,
-    ...Object.keys(groupedMenu).filter(
-      (cat) => !categoryOrder.includes(cat)
-    ),
+    ...Object.keys(groupedMenu).filter((cat) => !categoryOrder.includes(cat)),
   ];
 
   return (
@@ -202,12 +216,13 @@ export default function MenuPage() {
           )}
 
           {ethPrice > 0 && (
-            <h3>
-              1 DAP = {(ethPrice / 1000).toLocaleString("vi-VN")} VNĐ
-            </h3>
+            <h3>1 DAP = {(ethPrice / 1000).toLocaleString("vi-VN")} VNĐ</h3>
           )}
           {U2UPrice > 0 && (
-            <h3>1 U2U = {U2UPrice.toLocaleString("vi-VN")} VNĐ</h3>
+            <>
+              <h3>1 U2U = {U2UPrice.toLocaleString("vi-VN")} VNĐ</h3>
+              <p style={{ fontSize: "0.8em" }}>{currentTime}</p>
+            </>
           )}
         </div>
         <div>

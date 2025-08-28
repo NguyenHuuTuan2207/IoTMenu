@@ -19,6 +19,7 @@ export default function MenuPage() {
     const [quantities, setQuantities] = useState<Record<number, number>>({});
     const [ethPrice, setEthPrice] = useState<number>(0);
     const [U2UPrice, setU2UPrice] = useState<number>(0);
+    const [currentTime, setCurrentTime] = useState<string>("");
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -46,15 +47,34 @@ export default function MenuPage() {
                     .catch((err) => console.error(err));
             };
 
+            // ✅ Hàm cập nhật thời gian
+            const updateTime = () => {
+                const now = new Date();
+                const pad = (n: number) => n.toString().padStart(2, "0");
+
+                const hours = pad(now.getHours());
+                const minutes = pad(now.getMinutes());
+                const seconds = pad(now.getSeconds());
+                const day = pad(now.getDate());
+                const month = pad(now.getMonth() + 1);
+                const year = now.getFullYear();
+
+                const formatted = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+                setCurrentTime(formatted);
+            };
+
             updateEthPrice();
             updateU2UPrice();
+            updateTime();
 
             const intervalId = setInterval(updateEthPrice, 30000);
             const u2uIntervalId = setInterval(updateU2UPrice, 30000);
+            const timeIntervalId = setInterval(updateTime, 1000); // cập nhật mỗi giây
 
             return () => {
                 clearInterval(intervalId);
                 clearInterval(u2uIntervalId);
+                clearInterval(timeIntervalId);
             };
         }
     }, []);
@@ -76,7 +96,6 @@ export default function MenuPage() {
     const total = calculateTotal(menu, quantities);
     const dapAmount = calculateDap(total, ethPrice);
 
-    // ✅ Kiểm tra giỏ hàng chỉ chứa sản phẩm thuộc danh mục "IoT Apartment & Hotel"
     const hasItems = Object.values(quantities).some(qty => qty > 0);
     const onlyIoTItems =
         hasItems &&
@@ -86,7 +105,6 @@ export default function MenuPage() {
             return item?.danh_muc === "IoT Apartment & Hotel";
         });
 
-    // ✅ Thứ tự ưu tiên danh mục
     const categoryOrder = ["Đồ uống", "Sâm Ngọc Linh", "IoT Apartment & Hotel"];
     const sortedCategories = [
         ...categoryOrder,
@@ -133,7 +151,6 @@ export default function MenuPage() {
                                             >+</button>
                                             <span className={styles.price}>{formatCurrency(item.gia)}</span>
 
-                                            {/* Giá U2U hiển thị ở từng item (chỉ IoT Apartment & Hotel) */}
                                             {item.danh_muc === "IoT Apartment & Hotel" && U2UPrice > 0 && (
                                                 <div className={styles.u2udisplay}>
                                                     {(item.gia / U2UPrice).toLocaleString('en-US', {
@@ -155,7 +172,6 @@ export default function MenuPage() {
                     <h2>Tổng cộng: {formatCurrency(total)}</h2>
                     <h1 className={styles.dap}>≈ {dapAmount.toFixed(1)} DAP </h1>
 
-                    {/* ✅ Chỉ hiển thị tổng U2U nếu giỏ hàng chỉ có sản phẩm IoT Apartment & Hotel */}
                     {onlyIoTItems && U2UPrice > 0 && (
                         <h2>
                             = {(total / U2UPrice).toLocaleString('en-US', {
@@ -169,7 +185,11 @@ export default function MenuPage() {
                         <h3>1 DAP = {(ethPrice / 1000).toLocaleString('vi-VN')} VNĐ</h3>
                     )}
                     {U2UPrice > 0 && (
-                        <h3>1 U2U = {U2UPrice.toLocaleString('vi-VN')} VNĐ</h3>
+                        <>
+                            <h3>1 U2U = {U2UPrice.toLocaleString('vi-VN')} VNĐ</h3>
+                            {/* ✅ Thời gian hiển thị ngay dưới dòng 1 U2U */}
+                            <p style={{ fontSize: "0.8em" }}>{currentTime}</p>
+                        </>
                     )}
                 </div>
                 <div>
@@ -186,10 +206,9 @@ export default function MenuPage() {
                     </ul>
                 </div>
             </div>
-            {/* Footer */}
             <footer className={styles.footer}>
                 <p>© Bản quyền thuộc về IoT Innovation Hub 2025</p>
             </footer>
-        </div>
+        </div >
     );
 }
