@@ -182,7 +182,7 @@ export default function MenuPage() {
                     )}
 
                     {ethPrice > 0 && (
-                        <h3>1 DAP = {(ethPrice / 1000).toLocaleString('vi-VN')} VNĐ</h3>
+                        <h3>1 DAP = {(ethPrice / 100).toLocaleString('vi-VN')} VNĐ</h3>
                     )}
                     {U2UPrice > 0 && (
                         <>
