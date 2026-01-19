@@ -201,7 +201,7 @@ export default function MenuPage() {
       <div className={styles.totalRow}>
         <div className={styles.totalContainer}>
           <h2>Tổng cộng: {formatCurrency(total)}</h2>
-          <h1 className={styles.dap}>≈ {dapAmount.toFixed(1)} DAP </h1>
+          <h1 className={styles.dap}>≈ {dapAmount.toFixed(2)} DAP </h1>
 
           {/* Chỉ hiện khi giỏ hàng chỉ có món trong IoT Apartment & Hotel */}
           {onlyIoT && U2UPrice > 0 && (
