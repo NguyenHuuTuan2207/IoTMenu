@@ -37,7 +37,7 @@ export const calculateDap = (total: number, ethPrice: number): number => {
   if (ethPrice <= 0) return 0;
 
   const adjustedTotal = total >= 1000000 ? total : total * 4;
-  return adjustedTotal / (ethPrice / 1000);
+  return adjustedTotal / (ethPrice / 100);
 };
 
 
